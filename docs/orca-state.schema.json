@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HALOFLUX Orca state v1",
+  "description": "Read-only snapshot from orca worktree ps. Poll every 1.8 seconds when active, without overlap; timeout after 6 seconds. Errors clear workspaces and set connected=false. Pausing or stopping cancels the child and suppresses callbacks until resumed or restarted. All timestamps are Unix milliseconds; null means no source value. Counts are derived from the actual agents array, never CLI terminal counts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "connected", "observedAt", "activeWorkspaceId", "workspaces", "error"],
+  "properties": {
+    "version": { "const": 1 },
+    "connected": { "type": "boolean" },
+    "observedAt": { "type": "integer", "minimum": 0 },
+    "activeWorkspaceId": {
+      "type": ["string", "null"],
+      "description": "ID of the first workspace whose source isActive is true; never inferred from cwd or recency."
+    },
+    "workspaces": { "type": "array", "items": { "$ref": "#/$defs/workspace" } },
+    "error": { "type": ["string", "null"], "description": "Bounded error code only; no raw stderr or error message content." }
+  },
+  "$defs": {
+    "timestamp": { "type": ["number", "null"], "minimum": 0 },
+    "workspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "project", "path", "branch", "status", "isActive", "lastActivityAt", "agents"],
+      "properties": {
+        "id": { "type": "string", "description": "identity.key, else worktreeId, else folderId." },
+        "name": { "type": "string", "maxLength": 100 },
+        "project": { "type": "string", "description": "Source repo display value." },
+        "path": { "type": "string" },
+        "branch": { "type": ["string", "null"] },
+        "status": { "type": "string", "description": "Unmapped source status; fallback workspaceStatus or unknown." },
+        "isActive": { "type": "boolean" },
+        "lastActivityAt": { "$ref": "#/$defs/timestamp" },
+        "agents": { "type": "array", "items": { "$ref": "#/$defs/agent" } }
+      }
+    },
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "parentId", "type", "title", "modelId", "modelDisplayName", "needsInput", "attentionReason", "state", "outcome", "interrupted", "toolName", "updatedAt", "stateStartedAt", "hasLivePty"],
+      "properties": {
+        "id": { "type": "string", "description": "workspaceId/paneKey; nested observed subagents append /subagent:<source id>." },
+        "parentId": { "type": ["string", "null"], "description": "workspaceId/parentPaneKey, or containing pane's ID for an observed subagent." },
+        "type": { "type": "string" },
+        "modelId": {
+          "type": ["string", "null"],
+          "maxLength": 120,
+          "description": "Trimmed, single-line identifier from this exact source agent or subagent's model field. For a main pane with no usable model, optional read-only Orca hook metadata must match workspace ID, pane key and client type; the latest receivedAt wins and tied latest records remain null. Hook payload.model is accepted only for Stop/PermissionRequest with matching agentPresence.session and providerSession.id and no child-agent markers. Codex fallback requires the hook's exact providerSession.id and transcriptPath to match threads.id and rollout_path in that transcript's permitted account home/state_5.sqlite. Rollout content is never read. A 10-second cache with database/WAL file signatures bounds reads. No model is inferred from agentType, another agent, or global settings. Missing, empty, oversized or control-bearing values, and unresolved auto/automatic/default/unknown/unspecified selectors, remain null."
+        },
+        "modelDisplayName": {
+          "type": ["string", "null"],
+          "maxLength": 120,
+          "description": "The same verified source identifier as modelId, preserving its version without inventing a marketing name. Null when the source does not expose a model."
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "taskTitle, displayName or conversationName. Subagent description is used only if already a single line of at most 100 characters; otherwise type plus short ID. No prompts, tool inputs, terminal output or assistant messages are included."
+        },
+        "state": { "type": "string", "description": "Unmapped mainAgent.state when provided, otherwise source agent state. Subagents preserve their own state." },
+        "needsInput": {
+          "type": "boolean",
+          "$comment": "Observed Codex child async requests additionally require the same account's threads and thread_spawn_edges to reach the current root session (at most 16 ancestors). The child's source parent and rollout-header parent must agree with its immediate spawn edge; its own header ID must match the observed child ID. Each pane/session is scanned independently.",
+          "description": "True only for a current user request associated with an exact local workspace/pane/client/session and live PTY. Blocking requests require a waiting/blocked root plus an explicit root interactivePrompt shape or matching request event; a child request is attributed only to its exact observed child ID. Codex asynchronous request_user_input_async calls with valid question structure are projected from the exact session rollout, independently of working/done. Reads begin with an 8 MiB tail, incrementally follow appended records and backfill older 1 MiB sections until a human/interrupt boundary or file start; each poll has a 16 MiB aggregate budget. Inode, truncation and session changes reset the cursor; no old pending state is published before catching up to the current file tip. Human-delivered user source metadata or interruption clears requests; agent notices, environment context, compaction, immediate accepted tool results, and normal turn completion do not. Metadata is processed on the existing utility queue; text and tool arguments are never retained or passed to the web scene. False means no confirmed request, including unsupported, oversized or unreadable metadata; ordinary waiting, unread, idle and child joins never independently trigger this flag."
+        },
+        "attentionReason": { "enum": ["approval", "question", null], "description": "The confirmed request kind, or null when needsInput is false. Approval takes priority if a blocking approval and an asynchronous question coexist." },
+        "outcome": {
+          "enum": ["success", "failure", "cancellation", "superseded", "interruption", "unconfirmed", null],
+          "description": "Whitelisted mainAgent.outcome, or subagent.outcome when explicitly present. These are Orca's AGENT_TURN_OUTCOMES. Missing and unknown future values remain null; done without an outcome does not prove successful completion."
+        },
+        "interrupted": { "type": ["boolean", "null"], "description": "Original interrupted flag, only when explicitly supplied as a boolean. Missing remains null." },
+        "toolName": { "type": ["string", "null"] },
+        "updatedAt": { "$ref": "#/$defs/timestamp", "description": "Original update timestamp; a child's startedAt is never substituted." },
+        "stateStartedAt": { "$ref": "#/$defs/timestamp", "description": "Original state-transition clock, or null. Legacy child startedAt describes its birth and is never used here." },
+        "hasLivePty": { "type": "boolean", "description": "True only when the source explicitly reports a live PTY; child agents without this field use false." },
+        "activity": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Optional original pane activity metadata, restricted to known status fields. Its potentially message-bearing title is excluded.",
+          "properties": {
+            "listed": { "type": "boolean" },
+            "status": { "type": "string" },
+            "unread": { "type": "boolean" },
+            "clearable": { "type": "boolean" },
+            "sortAt": { "$ref": "#/$defs/timestamp" }
+          }
+        }
+      }
+    }
+  }
+}

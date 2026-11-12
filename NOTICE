@@ -1,0 +1,25 @@
+HaloFlux for macOS — an independent, modified version of HALOFLUX.
+
+Original work: HALOFLUX by Ryder191 (RYDER CODE / Ms MAIKEBAIs CAT)
+Source: https://github.com/Ryder191/haloflux
+
+Required Notice: Copyright (c) 2026 Ryder191 (RYDER CODE / Ms MAIKEBAIs CAT) - https://github.com/Ryder191/haloflux
+Required Notice: Noncommercial use only. Any commercial use is strictly prohibited. No commercial licenses are offered.
+
+Thank you to Ryder191 for the original artwork, particle animation, light
+beams, ring graphics, and visual design that make this adaptation possible.
+The original work and its complete LICENSE are retained. This adaptation
+does not claim authorship of the original artwork or endorsement by Ryder191.
+
+macOS host and Orca integration modifications:
+Copyright (c) 2026 SHOCKY47 and contributors.
+These modifications are provided under PolyForm Noncommercial 1.0.0,
+subject to the original project's notices and restrictions in LICENSE.
+Adaptation: https://github.com/SHOCKY47/haloflux-mac
+
+Orca is an independent application. This is an unofficial local integration.
+
+Bundled music: "Synthwave 421k" by The Cynic Project / cynicmusic,
+from the Pixelsphere soundtrack; CC0, as credited by the original project.
+The desktop application disables music by default.
+

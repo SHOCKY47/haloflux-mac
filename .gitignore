@@ -1,0 +1,16 @@
+.DS_Store
+build/
+dist/
+*.log
+*.db
+*.db-*
+*.sqlite*
+*.jsonl
+*.mov
+*.mp4
+*.saver/
+*.appex/
+graphify-out/
+.env
+.env.*
+

@@ -1,0 +1,41 @@
+/* Add real workspace information to the original HALOFLUX composition. */
+html[data-orca-scene="true"] {
+  --orca-accent: rgb(180, 180, 180);
+  --orca-secondary: rgb(191, 191, 191);
+  --pink: var(--orca-accent);
+  --teal: var(--orca-accent);
+}
+html[data-orca-scene="true"] header { grid-template-columns: minmax(0,1.7fr) repeat(5,minmax(0,1fr)); }
+html[data-orca-scene="true"] .brand { min-width: 0; max-width: 100%; overflow: hidden; padding-right: 12px; }
+html[data-orca-scene="true"] .brand h1,
+html[data-orca-scene="true"] .brand p { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* JS interpolates these colors once, in step with the canvas palette. */
+html[data-orca-scene="true"] .brand h1 { color: var(--orca-accent); }
+html[data-orca-scene="true"] .kpi .seg i { background: var(--orca-accent); transition: width 1.2s ease; }
+html[data-orca-scene="true"] .feed div,
+html[data-orca-scene="true"] .code div { overflow: hidden; text-overflow: ellipsis; }
+html[data-orca-scene="true"] .feed .n { margin-right: 6px; font-size: 8px; }
+html[data-orca-scene="true"] .feed .vb { width: auto; min-width: 34px; margin-right: 5px; }
+html[data-orca-scene="true"] .code .ln { display: inline-block; min-width: 32px; margin-right: 7px; }
+html[data-orca-scene="true"] .routes { grid-template-columns: minmax(0,1.6fr) repeat(3,minmax(0,.7fr)); }
+html[data-orca-scene="true"] .routes .nm.current { color: var(--orca-accent); font-weight: 700; }
+html[data-orca-scene="true"] .routes .chip { min-width: 20px; text-align: center; }
+html[data-orca-scene="true"] .ag { min-width: 0; gap: 4px; }
+html[data-orca-scene="true"] .ag .id { width: 13px; flex-shrink: 0; }
+html[data-orca-scene="true"] .ag .rl { width: 33px; overflow: hidden; flex-shrink: 0; text-overflow: ellipsis; }
+html[data-orca-scene="true"] .ag .st { text-overflow: ellipsis; }
+html[data-orca-scene="true"] .ag .cells i { width: 4px; height: 5px; }
+html[data-orca-scene="true"] .orca-working { color: var(--orca-accent); }
+html[data-orca-scene="true"] .orca-waiting { color: #c9bd9e; }
+html[data-orca-scene="true"] .orca-ended { color: #969da7; }
+html[data-orca-scene="true"] .orca-error { color: #dba3ae; }
+html[data-orca-scene="true"] .orca-muted { color: var(--dim); }
+html[data-orca-scene="true"] .chk { max-width: min(290px,45vw); }
+html[data-orca-scene="true"] .chk span { display: block; overflow: hidden; text-overflow: ellipsis; }
+html[data-orca-scene="true"][data-orca-connection="stale"] .status .big,
+html[data-orca-scene="true"][data-orca-connection="offline"] .status .big { color: #c9bd9e; }
+html[data-orca-scene="true"][data-orca-default="true"] .status .big { color: #a9aeb7; }
+html[data-orca-scene="true"][data-orca-default="true"] .status .sm { color: #747b86; }
+@media (max-width:1000px) {
+  html[data-orca-scene="true"] header { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}

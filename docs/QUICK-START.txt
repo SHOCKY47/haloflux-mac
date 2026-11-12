@@ -1,0 +1,62 @@
+HALOFLUX FOR macOS — v0.1
+
+Original work: HALOFLUX by Ryder191 (RYDER CODE / Ms MAIKEBAIs CAT)
+Source: https://github.com/Ryder191/haloflux
+macOS adaptation: https://github.com/SHOCKY47/haloflux-mac
+Thank you to Ryder191 for the original animation and visual design.
+Modified from HALOFLUX. Noncommercial use only. See LICENSE and NOTICE.
+
+INSTALL / 安装
+
+1. Requires an Apple Silicon (M-series) Mac and macOS 13 or later.
+   需要 M 系列 Mac，macOS 13 或更新版本。
+2. Extract the ZIP and double-click Install.command.
+   解压 ZIP，双击 Install.command。
+3. Find the circle icon in the menu bar. Login startup is enabled.
+   在菜单栏找到圆形图标；安装器会启用登录自启。
+4. Open Orca and start an Agent task to show live activity.
+   打开 Orca 并开始任务即可显示真实状态。Orca 未启动时显示待命画面。
+
+No Xcode, Python, Node.js, admin access, or API key is needed to install.
+安装不需要开发工具、管理员权限或 API Key。
+
+FIRST LAUNCH / 首次打开
+
+This app is ad-hoc signed and is not Apple-notarized. If macOS blocks it,
+use System Settings > Privacy & Security > Open Anyway after reviewing
+the download source. Then open ~/Applications/HaloFlux.app.
+本版未经过 Apple 公证。如果被拦截，确认下载来源后，在“系统设置 >
+隐私与安全性 > 仍要打开”中允许，再打开安装后的 HaloFlux.app。
+https://support.apple.com/en-us/102445
+
+If Install.command cannot open, type "bash " in Terminal, drag install.sh
+into the window, and press Return. App approval may still be required.
+安装脚本无法双击时，在终端输入 bash 和空格，再拖入 install.sh，回车。
+
+ORCA
+
+Install Orca's CLI using its CLI installation feature. With Orca running:
+  orca worktree ps --limit 10000 --json
+should return ok: true and workspaces. The app detects Orca automatically.
+Default CLI paths: /usr/local/bin/orca and /opt/homebrew/bin/orca.
+
+Controls: circle menu > Preview Animation / Animation Speed / Quit HALOFLUX.
+Default motion speed is 25%. Workspace rotation is every 15 seconds.
+
+UPDATE / 更新
+
+Run the new release's Install.command. Old installations are retained in:
+  ~/Library/Application Support/HaloFlux/Backups/
+
+REMOVE / 卸载
+
+Double-click Uninstall.command. This removes the login job and moves the
+app to Trash. Preferences and backups are retained.
+双击 Uninstall.command，移除登录自启并将应用移入废纸篓，保留备份和偏好设置。
+
+Desktop only: no lock-screen video, wallpaper extension, or screen saver.
+本发行版只包含桌面壁纸，不包含锁屏动画、锁屏扩展或屏保。
+
+Read the full README for data access, compatibility, and attribution:
+https://github.com/SHOCKY47/haloflux-mac
+
